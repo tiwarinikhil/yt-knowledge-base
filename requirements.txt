@@ -1,0 +1,12 @@
+yt-dlp
+openai-whisper
+langchain
+langchain-community
+langchain-text-splitters
+langchain-core
+faiss-cpu
+sentence-transformers
+gradio
+ollama
+openai
+torch

@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables (contains secrets)
+.env
+
+# Generated data — too large for git
+transcripts/*.mp3
+transcripts/*.txt
+indexes/*/
+
+# OS
+.DS_Store
+Thumbs.db
