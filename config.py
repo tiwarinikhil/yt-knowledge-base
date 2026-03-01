@@ -9,7 +9,7 @@ except ImportError:
 
 LLM_BACKEND: str = os.environ.get("LLM_BACKEND", "ollama")
 
-OLLAMA_MODEL: str = "llama3"
+OLLAMA_MODEL: str = "llama3.2"
 OPENAI_MODEL: str = "gpt-4o-mini"
 OPENAI_API_KEY: str = os.environ.get("OPENAI_API_KEY", "")
 

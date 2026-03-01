@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlparse
 from core.chunker import chunk_transcripts
 from core.embedder import build_index, index_exists, load_index
 from core.llm import answer
-from core.retriever import format_context, retrieve
+from core.retriever import format_context, get_timestamps, retrieve
 from core.transcriber import process_url
 
 
@@ -33,7 +33,9 @@ def ingest(url: str) -> str:
     return f"Done. Indexed {len(transcripts)} video(s). Ready to chat."
 
 
-def query(question: str, index_id: str) -> str:
+def query(question: str, index_id: str) -> dict:
     docs = retrieve(question, index_id)
+    timestamps = get_timestamps(docs)
     context = format_context(docs)
-    return answer(question, context)
+    answer_text = answer(question, context)
+    return {"answer": answer_text, "timestamps": timestamps}

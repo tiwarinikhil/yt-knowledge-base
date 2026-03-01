@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import whisper
@@ -43,17 +44,26 @@ def download_audio(video_id: str, url: str) -> Path:
     return audio_path
 
 
-def transcribe_audio(video_id: str, audio_path: Path) -> str:
+def transcribe_audio(video_id: str, audio_path: Path) -> tuple[str, list[dict]]:
     transcript_path = TRANSCRIPTS_DIR / f"{video_id}.txt"
-    if transcript_path.exists():
-        return transcript_path.read_text(encoding="utf-8")
+    segments_path = TRANSCRIPTS_DIR / f"{video_id}_segments.json"
+
+    if transcript_path.exists() and segments_path.exists():
+        text = transcript_path.read_text(encoding="utf-8")
+        segments = json.loads(segments_path.read_text(encoding="utf-8"))
+        return text, segments
 
     model = whisper.load_model(WHISPER_MODEL_SIZE, device=DEVICE)
     result = model.transcribe(str(audio_path))
     text: str = result["text"]
+    segments = [
+        {"start": s["start"], "end": s["end"], "text": s["text"]}
+        for s in result["segments"]
+    ]
 
     transcript_path.write_text(text, encoding="utf-8")
-    return text
+    segments_path.write_text(json.dumps(segments, indent=2), encoding="utf-8")
+    return text, segments
 
 
 def process_url(url: str) -> list[dict]:
@@ -63,12 +73,13 @@ def process_url(url: str) -> list[dict]:
     for video in videos:
         print(f"Processing: {video['title']}")
         audio_path = download_audio(video["video_id"], video["url"])
-        transcript = transcribe_audio(video["video_id"], audio_path)
+        transcript, segments = transcribe_audio(video["video_id"], audio_path)
         results.append(
             {
                 "video_id": video["video_id"],
                 "title": video["title"],
                 "transcript": transcript,
+                "segments": segments,
             }
         )
 
