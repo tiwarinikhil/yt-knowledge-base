@@ -1,4 +1,4 @@
-# YouTube Knowledge Base
+# YouTube Knowledge Base  
 
 A local RAG-powered Q&A system for YouTube videos and playlists. Paste any
 YouTube URL, the app transcribes it with Whisper, and you can chat with the
